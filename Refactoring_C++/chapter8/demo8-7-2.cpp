@@ -9,7 +9,8 @@ private:
 
 public:
 	void addCustomer(Customer* arg);
-	void removeCustomer(Customer& arg);
+	void addedCustomer(Customer* arg);
+	void removeCustomer(Customer* arg);
 	std::set<Customer*>& getCustomers(){
 		return _customers;
 	}
@@ -21,8 +22,11 @@ private:
 
 public:
 	void addOrder(Order* arg) {
+		_orders.emplace(arg);
 		(*arg).addCustomer(this);
-		_orders.emplace(&arg);
+	}
+	void addedOrder(Order* arg) {
+		_orders.emplace(arg);
 	}
 	void removeOrder(Order& arg) {
 		auto it = _orders.find(&arg);
@@ -37,13 +41,16 @@ public:
 };
 
 void Order::addCustomer(Customer* arg) {
-	(*arg).addOrder(this);
-	_customers.emplace(&arg);
+	_customers.emplace(arg);
+	(*arg).addedOrder(this);
 }
-void Order::removeCustomer(Customer& arg) {
-	auto it = _customers.find(&arg);
+void Order::addedCustomer(Customer* arg) {
+	_customers.emplace(arg);
+}
+void Order::removeCustomer(Customer* arg) {
+	auto it = _customers.find(arg);
 	if (it != _customers.end()) {
 		_customers.erase(it);
-		arg.getOrders().erase(arg.getOrders().find(this));
+		(*arg).getOrders().erase((*arg).getOrders().find(this));
 	}
 }

@@ -2,73 +2,76 @@
 class EmployeeType 
 {
 public:
-	virtual int getTypeCode() const;
-	static EmployeeType newType(int arg) {
-		switch (arg) {
-		case Employee::ENGINEER:
-			return Engineer();
-		case Employee::SALESMAN:
-			return SalesMan();
-		case Employee::MANAGER:
-			return Manager();
-		}
-	}
+	static const int ENGINEER = 0;
+	static const int SALESMAN = 1;
+	static const int MANAGER = 2;
+
+	virtual int getTypeCode() const = 0;
 };
 
 class Engineer : public EmployeeType
 {
 	int getTypeCode() const override {
-		return Employee::ENGINEER;
+		return ENGINEER;
 	}
 };
 
 class SalesMan : public EmployeeType
 {
 	int getTypeCode() const override {
-		return Employee::SALESMAN;
+		return SALESMAN;
 	}
 };
 
 class Manager : public EmployeeType
 {
 	int getTypeCode() const override {
-		return Employee::MANAGER;
+		return MANAGER;
 	}
 };
+
+EmployeeType* newType(int arg) {
+	switch (arg) {
+	case EmployeeType::ENGINEER:
+		return new Engineer();
+	case EmployeeType::SALESMAN:
+		return new SalesMan();
+	case EmployeeType::MANAGER:
+		return new Manager();
+	default:
+		return nullptr;
+	}
+}
 
 class Employee
 {
 private:
-	EmployeeType _type;
+	EmployeeType* _type;
 	int _monthlySalary;
 	int _commission;
 	int _bouns;
 
 public:
-	static const int ENGINEER = 0;
-	static const int SALESMAN = 1;
-	static const int MANAGER = 2;
-
 	Employee(int type) {
 		setType(type);
 	}
 
 	const int payAmount() const {
 		switch (getType()) {
-		case ENGINEER:
+		case EmployeeType::ENGINEER:
 			return _monthlySalary;
-		case SALESMAN:
+		case EmployeeType::SALESMAN:
 			return _monthlySalary + _commission;
-		case MANAGER:
+		case EmployeeType::MANAGER:
 			return _monthlySalary + _bouns;
 		}
 	}
 
 	const int getType() const {
-		return _type.getTypeCode();
+		return _type->getTypeCode();
 	}
 	void setType(int arg) {
-		_type = EmployeeType::newType(arg);
+		_type = newType(arg);
 	}
 };
 

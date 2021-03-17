@@ -9,27 +9,12 @@ public:
 	static const int SALESMAN = 1;
 	static const int MANAGER = 2;
 
-	virtual int getType();
-	static Employee* create(int type) {
-		switch (type) {
-		case ENGINEER:
-			return new Engineer();
-		case SALESMAN:
-			return new SalesMan();
-		case MANAGER:
-			return new Manager();
-		}
-	}
-	
-private:
-	Employee() = default;
-	Employee(int type) : _type(type) {}
+	virtual int getType() = 0;
 };
 
 class Engineer : public Employee
 {
 public :
-	Engineer() = default;
 	int getType() {
 		return Employee::ENGINEER;
 	}
@@ -38,7 +23,6 @@ public :
 class SalesMan : public Employee
 {
 public:
-	SalesMan() = default;
 	int getType() {
 		return Employee::SALESMAN;
 	}
@@ -47,8 +31,20 @@ public:
 class Manager : public Employee
 {
 public:
-	Manager() = default;
 	int getType() {
 		return Employee::MANAGER;
 	}
 };
+
+Employee* create(int type) {
+	switch (type) {
+	case Employee::ENGINEER:
+		return new Engineer();
+	case Employee::SALESMAN:
+		return new SalesMan();
+	case Employee::MANAGER:
+		return new Manager();
+	default:
+		return nullptr;
+	}
+}

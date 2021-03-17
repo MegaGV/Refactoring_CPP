@@ -11,6 +11,13 @@ public:
 	const bool isAdvanced() const {
 		return _isAdvanced;
 	}
+	const std::string getName() const {
+		return _name;
+	}
+
+	const bool operator< (const Course& course) const {
+		return _name.compare(course.getName());
+	}
 };
 
 class Person
@@ -23,9 +30,6 @@ public:
 	}
 	void initializeCourses(std::set<Course>& arg) {
 		_courses = arg;
-		/*_courses.clear();
-		for (auto course : arg)
-			_courses.emplace(course);*/
 	}
 
 	void addCourse(Course arg) {
